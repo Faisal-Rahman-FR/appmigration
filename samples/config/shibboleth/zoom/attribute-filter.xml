@@ -1,0 +1,9 @@
+<AttributeFilterPolicyGroup xmlns="urn:mace:shibboleth:2.0:afp" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <AttributeFilterPolicy id="zoom-synthetic-example">
+    <PolicyRequirementRule xsi:type="Requester" value="example.zoom.us"/>
+    <AttributeRule attributeID="mail"><PermitValueRule xsi:type="ANY"/></AttributeRule>
+    <AttributeRule attributeID="givenName"><PermitValueRule xsi:type="ANY"/></AttributeRule>
+    <AttributeRule attributeID="sn"><PermitValueRule xsi:type="ANY"/></AttributeRule>
+    <AttributeRule attributeID="eduPersonAffiliation"><PermitValueRule xsi:type="ANY"/></AttributeRule>
+  </AttributeFilterPolicy>
+</AttributeFilterPolicyGroup>

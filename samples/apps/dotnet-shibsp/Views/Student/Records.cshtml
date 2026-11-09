@@ -1,0 +1,4 @@
+@model System.Collections.Generic.List<Demo.StudentRecords.Models.StudentRecord>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Student records</title></head><body><h1>Student records</h1><table><thead><tr><th>Student</th><th>Program</th><th>Status</th></tr></thead><tbody>
+@foreach (var record in Model) { <tr><td>@record.StudentNumber</td><td>@record.Program</td><td>@record.Status</td></tr> }
+</tbody></table><a href="/Student/Profile">My profile</a></body></html>

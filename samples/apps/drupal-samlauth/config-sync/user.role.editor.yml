@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - node
+    - system
+id: editor
+label: Editor
+weight: 3
+is_admin: null
+permissions:
+  - 'access content'
+  - 'access content overview'
+  - 'create article content'
+  - 'edit any article content'
+  - 'edit own article content'
+  - 'view own unpublished content'

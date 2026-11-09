@@ -1,0 +1,1 @@
+{"@class":"org.apereo.cas.services.CasRegisteredService","id":203,"name":"Dining","serviceId":"https://dining.fixture.invalid/.*","attributes":["uid","eduPersonAffiliation"],"requiredAffiliation":"student","assignedUsers":["carol"]}

@@ -1,0 +1,1 @@
+<Export useCase="UC-03"><EntityDescriptor entityID="https://student.demo.test/shibboleth"/><Protocol>SAML2</Protocol><Integration>IIS Shibboleth SP trusted server variables</Integration><Attributes>eduPersonPrincipalName eduPersonAffiliation displayName</Attributes><AccountLink>eppn</AccountLink><Roles>student staff</Roles><AssignedUsers>carol bob</AssignedUsers></Export>

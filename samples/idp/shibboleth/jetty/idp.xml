@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "https://jetty.org/configure_10_0.dtd">
+<Configure class="org.eclipse.jetty.ee10.webapp.WebAppContext">
+  <Set name="contextPath">/idp</Set>
+  <Set name="war">/opt/shibboleth-idp/war/idp.war</Set>
+  <Set name="extractWAR">true</Set>
+  <Set name="configurationDiscovered">false</Set>
+</Configure>

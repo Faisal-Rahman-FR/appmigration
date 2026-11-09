@@ -1,0 +1,1 @@
+{"id":"parking","protocol":"CAS3","entityId":"https://parking.fixture.invalid/.*","attributes":["uid"],"accountLink":"uid","authorization":"authenticated","matchingUsers":["grace"],"complexityBand":"medium","entraTargetPattern":"OIDC re-integration","reasons":["CAS protocol must be replaced or bridged."],"secretFields":[]}

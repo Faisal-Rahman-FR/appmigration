@@ -1,0 +1,1 @@
+{"id":"oidc","protocol":"OIDC","entityId":"grant-api","attributes":["sub","email"],"accountLink":"sub","authorization":"research","matchingUsers":["alice"],"complexityBand":"medium","entraTargetPattern":"OIDC re-integration","reasons":["Re-register confidential client and update issuer/audience; rotate exported secret."],"secretFields":["client_secret"]}

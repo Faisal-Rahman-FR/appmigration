@@ -1,0 +1,7 @@
+@model Demo.StudentRecords.Models.ProfileModel
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Student profile</title></head><body><h1>Student profile</h1>
+<p data-testid="eppn">@Model.Identity.Eppn</p>@if (Model.Identity.Upn != null) { <p data-testid="upn">@Model.Identity.Upn</p> }<p data-testid="displayName">@Model.Identity.DisplayName</p>
+<p data-testid="affiliation">@String.Join("; ", Model.Identity.Affiliations)</p>
+@if (Model.Record != null) { <p data-testid="studentNumber">@Model.Record.StudentNumber</p> }
+<a href="/Student/Records">My records</a><a href="/Student/Registrar">Registrar workspace</a><a href="/Shibboleth.sso/Logout">Sign out</a>
+</body></html>

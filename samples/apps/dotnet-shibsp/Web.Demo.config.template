@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<appSettings>
+  <add key="webpages:Version" value="3.0.0.0"/>
+  <add key="webpages:Enabled" value="false"/>
+  <add key="IdpEntityId" value="@@IDP_ORIGIN@@/idp/shibboleth"/>
+  <add key="DemoScope" value="demo.test"/>
+  <add key="SpStatusUrl" value="@@STUDENT_ORIGIN@@/Shibboleth.sso/Status"/>
+</appSettings>

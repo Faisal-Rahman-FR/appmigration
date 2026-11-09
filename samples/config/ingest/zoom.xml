@@ -1,0 +1,1 @@
+<Export useCase="UC-02"><EntityDescriptor entityID="example.zoom.us"/><Protocol>SAML2</Protocol><Attributes>mail givenName sn eduPersonAffiliation</Attributes><AccountLink>mail</AccountLink><GalleryHint>Zoom</GalleryHint><AssignedUsers>alice</AssignedUsers></Export>

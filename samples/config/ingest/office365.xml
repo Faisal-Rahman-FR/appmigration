@@ -1,0 +1,1 @@
+<Export><EntityDescriptor entityID="urn:federation:MicrosoftOnline"/><Protocol>SAML2</Protocol><Attributes>ImmutableID mail</Attributes><AccountLink>ImmutableID</AccountLink><GalleryHint>Microsoft 365</GalleryHint><AssignedUsers>alice</AssignedUsers></Export>

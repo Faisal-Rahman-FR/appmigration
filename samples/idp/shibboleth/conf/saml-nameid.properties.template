@@ -1,0 +1,2 @@
+idp.nameid.saml2.default=urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+idp.transientId.generator=shibboleth.StoredTransientIdGenerator

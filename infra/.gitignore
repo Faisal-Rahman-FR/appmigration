@@ -1,0 +1,6 @@
+# Per-environment configuration and protected deployment state (credentials, SSH keys, results)
+environment.json
+environment.*.json
+!environment.sample.json
+!environment.schema.json
+.state/

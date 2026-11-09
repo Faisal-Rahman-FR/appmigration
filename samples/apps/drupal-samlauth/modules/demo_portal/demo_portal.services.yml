@@ -1,0 +1,5 @@
+services:
+  demo_portal.role_sync:
+    class: Drupal\demo_portal\EventSubscriber\RoleSync
+    tags:
+      - { name: event_subscriber }

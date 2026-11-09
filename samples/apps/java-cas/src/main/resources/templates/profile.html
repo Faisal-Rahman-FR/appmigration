@@ -1,0 +1,6 @@
+<!doctype html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head><meta charset="utf-8"><title>Employee profile</title></head><body>
+<h1>Employee profile</h1><p data-testid="uid" th:text="${identity.uid}"></p>
+<dl><th:block th:each="attribute : ${identity.attributes}" th:if="${attribute.key != 'uid'}"><dt th:text="${attribute.key}"></dt><dd th:attr="data-testid=${attribute.key}" th:text="${attribute.value}"></dd></th:block></dl>
+<a href="/admin">HR administrators</a>
+<form th:action="@{/logout}" method="post"><input th:if="${csrf != null}" type="hidden" name="csrf" th:value="${csrf}"><button type="submit">Sign out</button></form>
+</body></html>

@@ -1,0 +1,1 @@
+{"id":"dining","protocol":"CAS3","entityId":"https://dining.fixture.invalid/.*","attributes":["uid","eduPersonAffiliation"],"accountLink":"uid","authorization":"student","matchingUsers":["carol"],"complexityBand":"medium","entraTargetPattern":"OIDC re-integration","reasons":["Affiliation claims and application sessions must be migrated."],"secretFields":[]}

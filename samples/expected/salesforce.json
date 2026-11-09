@@ -1,0 +1,1 @@
+{"id":"salesforce","protocol":"SAML2","entityId":"https://saml.salesforce.com","attributes":["mail"],"accountLink":"mail","authorization":"admissions","matchingUsers":["frank"],"complexityBand":"low","entraTargetPattern":"gallery app","reasons":["Recognizable Salesforce entity; verify organization-specific identifier."],"secretFields":[]}

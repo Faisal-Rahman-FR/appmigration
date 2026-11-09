@@ -1,0 +1,14 @@
+<EntitiesDescriptor xmlns="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Name="Local Demo SPs">
+  <EntityDescriptor entityID="@@DRUPAL_ORIGIN@@/saml/metadata"><SPSSODescriptor AuthnRequestsSigned="true" WantAssertionsSigned="true" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <KeyDescriptor><ds:KeyInfo><ds:X509Data><ds:X509Certificate>@@DRUPAL_CERT@@</ds:X509Certificate></ds:X509Data></ds:KeyInfo></KeyDescriptor>
+    <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="@@DRUPAL_ORIGIN@@/saml/sls"/>
+    <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+    <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="@@DRUPAL_ORIGIN@@/saml/acs" index="0" isDefault="true"/>
+  </SPSSODescriptor></EntityDescriptor>
+  <EntityDescriptor entityID="@@STUDENT_ORIGIN@@/shibboleth"><SPSSODescriptor AuthnRequestsSigned="true" WantAssertionsSigned="true" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <KeyDescriptor><ds:KeyInfo><ds:X509Data><ds:X509Certificate>@@STUDENT_CERT@@</ds:X509Certificate></ds:X509Data></ds:KeyInfo></KeyDescriptor>
+    <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="@@STUDENT_ORIGIN@@/Shibboleth.sso/SLO"/>
+    <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
+    <AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="@@STUDENT_ORIGIN@@/Shibboleth.sso/SAML2/POST" index="1" isDefault="true"/>
+  </SPSSODescriptor></EntityDescriptor>
+</EntitiesDescriptor>

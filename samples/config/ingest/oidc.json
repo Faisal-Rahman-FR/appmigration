@@ -1,0 +1,1 @@
+{"protocol":"OIDC","client_id":"grant-api","issuer":"https://oidc.fixture.invalid","redirect_uris":["https://grants.fixture.invalid/callback"],"client_secret":"FAKE-EXPORT-ONLY-client-secret","claims":["sub","email"],"assignedUsers":["alice"]}

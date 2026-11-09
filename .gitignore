@@ -1,0 +1,14 @@
+.copilot-azure/
+samples/.local/
+samples/tests/node_modules/
+samples/tests/results/
+samples/tests/playwright-report/
+samples/tests/test-results/
+samples/apps/java-cas/target/
+samples/apps/dotnet-shibsp/bin/
+samples/apps/dotnet-shibsp/obj/
+
+# Local scratch
+.db-repair-result.json
+.github.zip
+Demo Instructions.txt

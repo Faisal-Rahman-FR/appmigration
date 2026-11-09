@@ -1,0 +1,21 @@
+demo_portal.home:
+  path: /demo
+  defaults:
+    _controller: '\Drupal\demo_portal\Controller\PortalController::home'
+    _title: 'Research Publishing'
+  requirements:
+    _access: 'TRUE'
+demo_portal.profile:
+  path: /demo/profile
+  defaults:
+    _controller: '\Drupal\demo_portal\Controller\PortalController::profile'
+    _title: 'Research profile'
+  requirements:
+    _user_is_logged_in: 'TRUE'
+demo_portal.editor:
+  path: /demo/editor
+  defaults:
+    _controller: '\Drupal\demo_portal\Controller\PortalController::editor'
+    _title: 'Editor workspace'
+  requirements:
+    _role: 'editor'

@@ -1,0 +1,58 @@
+{
+  "$schema": "./environment.schema.json",
+
+  "tenantId": "00000000-0000-0000-0000-000000000000",
+  "subscriptionId": "00000000-0000-0000-0000-000000000000",
+  "location": "eastus",
+  "resourceGroupName": "rg-idpdemo-contoso",
+
+  "namePrefix": "idpdemo",
+  "uniqueSuffix": "",
+  "deployedBy": "",
+  "operatorObjectId": "",
+
+  "domain": "demo.contoso.com",
+
+  "artifactTransfer": "direct",
+
+  "dns": {
+    "mode": "manual",
+    "waitMinutes": 60,
+    "azureDnsZone": {
+      "zoneName": "contoso.com",
+      "resourceGroup": "rg-dns",
+      "subscriptionId": ""
+    }
+  },
+
+  "tls": {
+    "acceptLetsEncryptTerms": false,
+    "contactEmail": ""
+  },
+
+  "network": {
+    "allowedHttpsSources": ["0.0.0.0/0"],
+    "vnetPrefix": "10.87",
+    "dataServiceDefaultAction": "Allow",
+    "dataServiceAllowedCidrs": []
+  },
+
+  "compute": {
+    "adminUsername": "demooperator",
+    "linuxVmSize": "Standard_D4s_v5",
+    "windowsVmSize": "Standard_D2s_v5",
+    "linuxDataDiskGb": 256,
+    "linuxImageVersion": "latest",
+    "windowsImageVersion": "latest"
+  },
+
+  "options": {
+    "runBrowserTests": true,
+    "failOnTestFailure": false
+  },
+
+  "tags": {
+    "owner": "your-name",
+    "purpose": "identity-migration-demo"
+  }
+}

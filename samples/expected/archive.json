@@ -1,0 +1,1 @@
+{"id":"archive","protocol":"SAML2","entityId":"https://archive.fixture.invalid/saml","attributes":["uid"],"accountLink":"uid","authorization":"disabled","matchingUsers":[],"complexityBand":"low","entraTargetPattern":"retire","reasons":["Explicit retired flag and no assigned users; obtain owner sign-off."],"secretFields":[]}

@@ -1,0 +1,7 @@
+<Attributes xmlns="urn:mace:shibboleth:2.0:attribute-map" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- Entra has no shibmd:Scope, so never use the IDs eppn or affiliation: the stock attribute policy deletes them. -->
+  <Attribute name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name" id="upn"><AttributeDecoder xsi:type="StringAttributeDecoder" caseSensitive="false"/></Attribute>
+  <Attribute name="uid" id="uid"><AttributeDecoder xsi:type="StringAttributeDecoder" caseSensitive="true"/></Attribute>
+  <Attribute name="http://schemas.microsoft.com/identity/claims/displayname" id="displayName"><AttributeDecoder xsi:type="StringAttributeDecoder" caseSensitive="false"/></Attribute>
+  <Attribute name="http://schemas.microsoft.com/ws/2008/06/identity/claims/role" id="roles"><AttributeDecoder xsi:type="StringAttributeDecoder" caseSensitive="true"/></Attribute>
+</Attributes>

@@ -1,0 +1,1 @@
+{"id":"lab","protocol":"SAML2","entityId":"https://lab.fixture.invalid/saml","attributes":["labRole"],"accountLink":"uid","authorization":"ScriptedAttribute maps group to labRole","matchingUsers":["alice"],"complexityBand":"high","entraTargetPattern":"needs analysis","reasons":["Arbitrary scripted transform is not automatically portable."],"secretFields":[]}

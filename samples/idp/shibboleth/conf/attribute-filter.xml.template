@@ -1,0 +1,16 @@
+<AttributeFilterPolicyGroup xmlns="urn:mace:shibboleth:2.0:afp" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:mace:shibboleth:2.0:afp https://shibboleth.net/schema/idp/shibboleth-afp.xsd">
+  <AttributeFilterPolicy id="drupal">
+    <PolicyRequirementRule xsi:type="Requester" value="@@DRUPAL_ORIGIN@@/saml/metadata"/>
+    <AttributeRule attributeID="uid"><PermitValueRule xsi:type="ANY"/></AttributeRule>
+    <AttributeRule attributeID="mail"><PermitValueRule xsi:type="ANY"/></AttributeRule>
+    <AttributeRule attributeID="displayName"><PermitValueRule xsi:type="ANY"/></AttributeRule>
+    <AttributeRule attributeID="eduPersonAffiliation"><PermitValueRule xsi:type="ANY"/></AttributeRule>
+  </AttributeFilterPolicy>
+  <AttributeFilterPolicy id="student">
+    <PolicyRequirementRule xsi:type="Requester" value="@@STUDENT_ORIGIN@@/shibboleth"/>
+    <AttributeRule attributeID="eduPersonPrincipalName"><PermitValueRule xsi:type="ANY"/></AttributeRule>
+    <AttributeRule attributeID="eduPersonAffiliation"><PermitValueRule xsi:type="ANY"/></AttributeRule>
+    <AttributeRule attributeID="displayName"><PermitValueRule xsi:type="ANY"/></AttributeRule>
+  </AttributeFilterPolicy>
+  <!-- The SaaS example policy is deliberately separate under config/shibboleth/zoom. -->
+</AttributeFilterPolicyGroup>

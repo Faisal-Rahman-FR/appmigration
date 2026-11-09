@@ -1,0 +1,1 @@
+{"id":"clubs","protocol":"CAS3","entityId":"https://clubs.fixture.invalid/.*","attributes":["uid","displayName"],"accountLink":"uid","authorization":"student","matchingUsers":["carol"],"complexityBand":"medium","entraTargetPattern":"OIDC re-integration","reasons":["CAS SLO cannot be assumed equivalent to OIDC logout."],"secretFields":[]}

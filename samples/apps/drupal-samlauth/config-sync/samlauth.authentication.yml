@@ -1,0 +1,48 @@
+login_menu_item_title: 'SAML login'
+logout_menu_item_title: 'SAML logout'
+login_link_title: 'Sign in with Shibboleth'
+login_auto_redirect: false
+login_redirect_url: /demo/profile
+logout_redirect_url: /demo
+error_redirect_url: /demo
+error_throw: false
+login_error_keep_session: false
+local_login_saml_error: true
+logout_drupal_idp: true
+logout_different_user: true
+drupal_login_roles: []
+sp_name_id_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+metadata_valid_secs: 86400
+metadata_cache_http: false
+unique_id_attribute: uid
+map_users: true
+map_users_name: true
+map_users_mail: false
+map_users_roles:
+  - anonymous
+create_users: false
+sync_name: false
+sync_mail: true
+user_name_attribute: uid
+user_mail_attribute: mail
+request_set_name_id_policy: true
+strict: true
+security_metadata_sign: false
+security_authn_requests_sign: true
+security_logout_requests_sign: true
+security_logout_responses_sign: true
+security_nameid_encrypt: false
+security_signature_algorithm: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
+security_encryption_algorithm: 'http://www.w3.org/2009/xmlenc11#aes256-gcm'
+security_messages_sign: true
+security_assertions_signed: true
+security_assertions_encrypt: true
+security_want_name_id: true
+security_request_authn_context: true
+security_lowercase_url_encoding: true
+debug_display_error_details: false
+debug_log_saml_in: false
+debug_log_saml_out: false
+debug_phpsaml: false
+use_base_url: true
+bypass_relay_state_check: false

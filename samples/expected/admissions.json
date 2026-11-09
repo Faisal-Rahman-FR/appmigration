@@ -1,0 +1,1 @@
+{"id":"admissions","protocol":"CAS3","entityId":"^https://admissions[0-9]+\\.fixture\\.invalid/.*","attributes":["uid","mail"],"accountLink":"uid","authorization":"service regex","matchingUsers":["frank"],"complexityBand":"high","entraTargetPattern":"OIDC re-integration","reasons":["CAS regex spans multiple origins; enumerate actual redirect URIs."],"secretFields":[]}

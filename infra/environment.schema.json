@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Identity migration demo environment",
+  "type": "object",
+  "required": ["tenantId", "subscriptionId", "location", "resourceGroupName", "domain", "tls", "network"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "tenantId": {"type": "string", "description": "Entra tenant GUID that owns the subscription."},
+    "subscriptionId": {"type": "string", "description": "Target subscription GUID."},
+    "location": {"type": "string", "description": "Azure region, for example eastus. Must offer the chosen VM sizes."},
+    "resourceGroupName": {"type": "string", "description": "Created if it does not exist; an existing group must be in the same region."},
+    "namePrefix": {"type": "string", "default": "idpdemo", "description": "2-14 lowercase letters/digits/hyphens. All resource names derive from namePrefix + a short unique suffix."},
+    "uniqueSuffix": {"type": "string", "description": "Optional 3-5 characters. Generated and remembered when blank. Cannot change after deployment."},
+    "deployedBy": {"type": "string", "description": "Optional tag value. Defaults to your user principal name."},
+    "operatorObjectId": {"type": "string", "description": "Optional Entra object ID granted Key Vault/Storage data roles. Defaults to the signed-in user."},
+    "operatorPrincipalType": {"enum": ["User", "ServicePrincipal", "Group"], "default": "User", "description": "Type of operatorObjectId. Anything other than User requires operatorObjectId."},
+    "domain": {"type": "string", "description": "A DNS name you control, for example demo.contoso.com. Apps are served at cas/idp/hr/drupal/alumni/student.<domain>; a wildcard certificate is issued."},
+    "artifactTransfer": {"enum": ["direct", "storage"], "default": "direct", "description": "direct: no Storage account or Key Vault; artifacts go through the VM command channel and a private peer-only handoff (works where policy forces those services private; Contributor is enough). storage: use Storage and Key Vault with RBAC (needs role-assignment permission and public endpoints). Cannot change after deployment."},
+    "dns": {
+      "type": "object",
+      "properties": {
+        "mode": {"enum": ["manual", "azureDns"], "default": "manual", "description": "manual: the script prints records and waits. azureDns: the script creates records in an Azure DNS zone you can write to."},
+        "waitMinutes": {"type": "integer", "minimum": 5, "maximum": 720, "default": 60},
+        "azureDnsZone": {
+          "type": "object",
+          "properties": {
+            "zoneName": {"type": "string"},
+            "resourceGroup": {"type": "string"},
+            "subscriptionId": {"type": "string", "description": "Defaults to subscriptionId."}
+          }
+        }
+      }
+    },
+    "tls": {
+      "type": "object",
+      "required": ["acceptLetsEncryptTerms"],
+      "properties": {
+        "acceptLetsEncryptTerms": {"type": "boolean", "description": "Must be true. Accepts the Let's Encrypt Subscriber Agreement for the certificate requested on your behalf."},
+        "contactEmail": {"type": "string", "description": "Optional ACME account email for expiry notices."}
+      }
+    },
+    "network": {
+      "type": "object",
+      "required": ["allowedHttpsSources"],
+      "properties": {
+        "allowedHttpsSources": {"type": "array", "items": {"type": "string"}, "minItems": 1, "description": "IPv4 addresses/CIDRs allowed to reach HTTPS (443). Use 0.0.0.0/0 only if public access is intended."},
+        "vnetPrefix": {"type": "string", "default": "10.87", "description": "First two octets of the private /16 network."},
+        "dataServiceDefaultAction": {"enum": ["Allow", "Deny"], "default": "Allow", "description": "Network default for Storage and Key Vault (Entra RBAC and TLS are always required)."},
+        "dataServiceAllowedCidrs": {"type": "array", "items": {"type": "string"}, "description": "Required when dataServiceDefaultAction is Deny: your public IPs, including any machine that runs this script."}
+      }
+    },
+    "compute": {
+      "type": "object",
+      "properties": {
+        "adminUsername": {"type": "string", "default": "demooperator"},
+        "linuxVmSize": {"type": "string", "default": "Standard_D4s_v5"},
+        "windowsVmSize": {"type": "string", "default": "Standard_D2s_v5"},
+        "linuxDataDiskGb": {"type": "integer", "minimum": 128, "maximum": 4096, "default": 256},
+        "linuxImageVersion": {"type": "string", "default": "latest"},
+        "windowsImageVersion": {"type": "string", "default": "latest"}
+      }
+    },
+    "options": {
+      "type": "object",
+      "properties": {
+        "runBrowserTests": {"type": "boolean", "default": true},
+        "failOnTestFailure": {"type": "boolean", "default": false, "description": "When false, failing browser tests are reported as warnings after a successful deployment."}
+      }
+    },
+    "tags": {"type": "object", "additionalProperties": {"type": "string"}, "description": "Extra tags applied to the resource group and resources."}
+  }
+}

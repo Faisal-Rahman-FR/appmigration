@@ -1,0 +1,1 @@
+{"id":"broken","protocol":"unknown","entityId":null,"attributes":[],"accountLink":"unknown","authorization":"unknown","matchingUsers":[],"complexityBand":"unknown","entraTargetPattern":"needs analysis","reasons":["Intentional JSON syntax error; report parse failure without aborting remaining inventory."],"secretFields":[],"parseErrorExpected":true}

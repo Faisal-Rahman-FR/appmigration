@@ -1,0 +1,1 @@
+{"id":"empty","protocol":"SAML2","entityId":"https://pilot.fixture.invalid/saml","attributes":["uid"],"accountLink":"uid","authorization":"nonexistent group","matchingUsers":[],"complexityBand":"medium","entraTargetPattern":"needs analysis","reasons":["Zero matching users is not evidence that an active pilot should be retired."],"secretFields":[]}

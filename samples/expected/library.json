@@ -1,0 +1,1 @@
+{"id":"library","protocol":"SAML2","entityId":"https://library.fixture.invalid/saml","attributes":["eduPersonPrincipalName","mail"],"accountLink":"eppn","authorization":"student","matchingUsers":["carol"],"complexityBand":"low","entraTargetPattern":"custom SAML","reasons":["Direct release; no scripted transforms."],"secretFields":[]}

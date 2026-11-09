@@ -1,0 +1,18 @@
+{
+  "name":"princeton-identity-demo-tests",
+  "version":"1.0.0",
+  "private":true,
+  "engines":{"node":">=24"},
+  "scripts":{
+    "start":"playwright test",
+    "test":"node --test specs/fixtures.test.mjs",
+    "test:e2e":"playwright test",
+    "typecheck":"tsc --noEmit"
+  },
+  "devDependencies":{
+    "@playwright/test":"1.56.1",
+    "@types/node":"24.10.0",
+    "fast-xml-parser":"5.11.2",
+    "typescript":"5.9.3"
+  }
+}

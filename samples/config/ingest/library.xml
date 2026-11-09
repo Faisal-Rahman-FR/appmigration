@@ -1,0 +1,1 @@
+<Export><EntityDescriptor entityID="https://library.fixture.invalid/saml"/><Protocol>SAML2</Protocol><Attributes>eduPersonPrincipalName mail</Attributes><AccountLink>eppn</AccountLink><RequireAffiliation>student</RequireAffiliation><AssignedUsers>carol</AssignedUsers></Export>

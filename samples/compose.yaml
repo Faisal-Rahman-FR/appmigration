@@ -1,0 +1,219 @@
+name: princeton-identity-demo
+services:
+  ldap:
+    image: osixia/openldap:1.5.0
+    command: ["--copy-service"]
+    environment:
+      LDAP_ORGANISATION: Synthetic Demo
+      LDAP_DOMAIN: demo.test
+      LDAP_ADMIN_PASSWORD: ${LDAP_ADMIN_PASSWORD:?Initialize first}
+      LDAP_CONFIG_PASSWORD: ${LDAP_ADMIN_PASSWORD:?Initialize first}
+      LDAP_READONLY_USER: "true"
+      LDAP_READONLY_USER_USERNAME: readonly
+      LDAP_READONLY_USER_PASSWORD: ${LDAP_BIND_PASSWORD:?Initialize first}
+      LDAP_TLS: "false"
+    volumes:
+      - ldap-data:/var/lib/ldap
+      - ldap-config:/etc/ldap/slapd.d
+      - ./idp/ldap/demo.schema:/container/service/slapd/assets/config/bootstrap/schema/custom/demo.schema:ro
+      - ./.local/ldap/50-users.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/50-users.ldif:ro
+    healthcheck:
+      test: ["CMD-SHELL", "ldapsearch -x -H ldap://localhost:389 -D cn=readonly,dc=demo,dc=test -w \"$$LDAP_READONLY_USER_PASSWORD\" -b ou=people,dc=demo,dc=test '(uid=alice)' uid | grep -q '^uid: alice'"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+    networks: [private]
+    restart: unless-stopped
+  db:
+    image: mariadb:11.4.5
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?Initialize first}
+      DB_PASSWORD: ${DB_PASSWORD:?Initialize first}
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./database/01-alumni.sql:/docker-entrypoint-initdb.d/01-alumni.sql:ro
+      - ./database/02-grants.sh:/docker-entrypoint-initdb.d/02-grants.sh:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    networks: [private]
+    restart: unless-stopped
+  cas:
+    build: ./idp/cas
+    volumes:
+      - ./.local/cas/cas.properties:/etc/cas/config/cas.properties:ro
+      - ./.local/cas/services:/etc/cas/services:ro
+      - ./.local/tls:/tls:ro
+    depends_on:
+      ldap: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8080/cas/readyz"]
+      interval: 20s
+      timeout: 10s
+      retries: 30
+      start_period: 90s
+    networks:
+      private: {ipv4_address: 172.30.87.10}
+    restart: unless-stopped
+  idp:
+    build: ./idp/shibboleth
+    environment:
+      IDP_HOST: ${IDP_HOST:?Initialize first}
+      IDP_ORIGIN: ${IDP_ORIGIN:?Initialize first}
+      IDP_SEALER_PASSWORD: ${IDP_SEALER_PASSWORD:?Initialize first}
+      LDAP_BIND_PASSWORD: ${LDAP_BIND_PASSWORD:?Initialize first}
+    volumes:
+      - idp-home:/opt/shibboleth-idp
+      - ./.local/shibboleth:/run/demo:ro
+      - ./.local/idp-metadata.xml:/run/idp-metadata.xml:ro
+      - ./.local/tls:/tls:ro
+    depends_on:
+      ldap: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8080/idp/readyz.jsp"]
+      interval: 20s
+      timeout: 10s
+      retries: 30
+      start_period: 90s
+    networks: [private]
+    restart: unless-stopped
+  hr:
+    build: ./apps/java-cas
+    environment:
+      PORT: "8080"
+      DEMO_AUTH: ${DEMO_AUTH:-cas}
+      CAS_ORIGIN: ${CAS_ORIGIN:?Initialize first}
+      HR_ORIGIN: ${HR_ORIGIN:?Initialize first}
+      ENTRA_TENANT_ID: ${ENTRA_TENANT_ID:-}
+      ENTRA_CLIENT_ID: ${ENTRA_CLIENT_ID:-}
+      ENTRA_CLIENT_SECRET: ${ENTRA_CLIENT_SECRET:-}
+    volumes:
+      - ./.local/tls:/tls:ro
+    depends_on:
+      cas: {condition: service_started}
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://localhost:8080/readyz"]
+      interval: 20s
+      timeout: 10s
+      retries: 30
+      start_period: 60s
+    networks: [private, edge]
+    restart: unless-stopped
+  drupal-bootstrap:
+    build: ./apps/drupal-samlauth
+    environment: &drupal-environment
+      DB_PASSWORD: ${DB_PASSWORD:?Initialize first}
+      DRUPAL_ADMIN_PASSWORD: ${DRUPAL_ADMIN_PASSWORD:?Initialize first}
+      DRUPAL_ORIGIN: ${DRUPAL_ORIGIN:?Initialize first}
+      IDP_ORIGIN: ${IDP_ORIGIN:?Initialize first}
+      DRUPAL_AUTH: ${DRUPAL_AUTH:-shibboleth}
+      ENTRA_TENANT_ID: ${ENTRA_TENANT_ID:-}
+      DEMO_BOOTSTRAP: "1"
+    volumes: &drupal-volumes
+      - drupal-files:/opt/drupal/web/sites/default/files
+      - ./.local/tls:/tls:ro
+      - ./.local/drupal:/run/demo:ro
+      - ./idp/ldap/users.json:/opt/demo/users.json:ro
+    depends_on:
+      db: {condition: service_healthy}
+    networks: [private]
+    restart: "no"
+  drupal:
+    build: ./apps/drupal-samlauth
+    environment:
+      <<: *drupal-environment
+      DEMO_BOOTSTRAP: "0"
+    volumes: *drupal-volumes
+    depends_on:
+      drupal-bootstrap: {condition: service_completed_successfully}
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent -H \"Host: $${DRUPAL_ORIGIN#https://}\" http://localhost/readyz"]
+      interval: 15s
+      timeout: 10s
+      retries: 30
+    networks: [private]
+    restart: unless-stopped
+  alumni:
+    build: ./apps/php-cpanel
+    environment:
+      PORT: "9000"
+      ALUMNI_AUTH: ${ALUMNI_AUTH:-cas}
+      CAS_ORIGIN: ${CAS_ORIGIN:?Initialize first}
+      ALUMNI_ORIGIN: ${ALUMNI_ORIGIN:?Initialize first}
+      ENTRA_TENANT_ID: ${ENTRA_TENANT_ID:-}
+      ENTRA_CLIENT_ID: ${ALUMNI_ENTRA_CLIENT_ID:-}
+      CAS_CA_FILE: /tls/ca.crt
+      SLO_PROXY_HOST: gateway
+      DB_HOST: db
+      DB_PASSWORD: ${DB_PASSWORD:?Initialize first}
+    volumes:
+      - ./.local/tls:/tls:ro
+      - alumni-sessions:/var/lib/php/sessions
+      # /dev/null keeps CAS mode working when no Entra secret file exists; a missing path would become a directory.
+      - ${ALUMNI_ENTRA_SECRET_FILE:-/dev/null}:/run/alumni-entra-secret.php:ro
+    depends_on:
+      db: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "php", "-r", "$$s=@fsockopen('127.0.0.1',9000); if(!$$s)exit(1); fclose($$s);"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+    networks: [private, edge]
+    restart: unless-stopped
+  apache:
+    build:
+      context: ./apps/php-cpanel
+      dockerfile: Apache.Dockerfile
+    depends_on:
+      alumni: {condition: service_started}
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/80; printf 'GET /healthz HTTP/1.0\\r\\nHost: alumni.demo.test\\r\\n\\r\\n' >&3; grep -q '200 OK' <&3"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+    networks: [private]
+    restart: unless-stopped
+  gateway:
+    image: nginx:1.28.0-alpine
+    ports:
+      - "${PUBLIC_BIND_IP:-127.0.0.1}:${PORT:-443}:443"
+    volumes:
+      - ./.local/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./.local/tls:/tls:ro
+    depends_on:
+      cas: {condition: service_started}
+      idp: {condition: service_started}
+      hr: {condition: service_started}
+      drupal: {condition: service_started}
+      apache: {condition: service_started}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- --no-check-certificate https://127.0.0.1/healthz | grep -q ok"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+    networks:
+      private:
+        ipv4_address: 172.30.87.2
+        aliases:
+          - ${CAS_HOST:?Initialize first}
+          - ${IDP_HOST:?Initialize first}
+          - ${HR_HOST:?Initialize first}
+          - ${DRUPAL_HOST:?Initialize first}
+          - ${ALUMNI_HOST:?Initialize first}
+      edge: {}
+    restart: unless-stopped
+networks:
+  private:
+    internal: true
+    ipam:
+      config: [{subnet: 172.30.87.0/24, ip_range: 172.30.87.128/25}]
+  edge: {}
+volumes:
+  ldap-data:
+  ldap-config:
+  db-data:
+  idp-home:
+  drupal-files:
+  alumni-sessions:

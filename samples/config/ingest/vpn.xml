@@ -1,0 +1,1 @@
+<Export><EntityDescriptor entityID="https://vpn.fixture.invalid/saml"/><Protocol>SAML2</Protocol><Attributes>uid memberOf</Attributes><AccountLink>uid</AccountLink><RequireGroup>vpn-users</RequireGroup><Transport>private network VPN appliance</Transport><AssignedUsers>bob</AssignedUsers></Export>

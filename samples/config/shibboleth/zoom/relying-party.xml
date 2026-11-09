@@ -1,0 +1,6 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:c="http://www.springframework.org/schema/c" xmlns:p="http://www.springframework.org/schema/p">
+  <!-- Insert this bean into shibboleth.RelyingPartyOverrides only after real SaaS metadata is supplied. -->
+  <bean parent="RelyingPartyByName" c:relyingPartyIds="example.zoom.us">
+    <property name="profileConfigurations"><list><bean parent="SAML2.SSO" p:signResponses="true" p:signAssertions="true" p:encryptAssertions="false"/></list></property>
+  </bean>
+</beans>

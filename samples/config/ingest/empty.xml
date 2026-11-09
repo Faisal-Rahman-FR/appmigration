@@ -1,0 +1,1 @@
+<Export><EntityDescriptor entityID="https://pilot.fixture.invalid/saml"/><Protocol>SAML2</Protocol><Attributes>uid</Attributes><AccountLink>uid</AccountLink><RequireGroup>cn=does-not-exist,ou=groups,dc=demo,dc=test</RequireGroup><AssignedUsers/><Retired>false</Retired></Export>

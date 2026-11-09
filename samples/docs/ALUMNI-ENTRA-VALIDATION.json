@@ -1,0 +1,41 @@
+{
+  "recipe": "PHP + phpCAS (shared hosting) to Entra ID (OIDC)",
+  "validationDate": "2026-11-05",
+  "verdict": "partially-validated-member-and-directory-not-observed",
+  "fullyVerified": false,
+  "tenantId": "9b6ae5da-be43-463a-807f-c2cf9ec887db",
+  "clientId": "9c1b9cf8-6f50-4294-93e9-1d08d7cf60c6",
+  "origin": "https://alumni.chris.securitylabworks.com",
+  "deployedMode": "entra",
+  "adminConsent": {"scope": "User.Read", "consentType": "AllPrincipals", "reason": "tenant blocks user consent"},
+  "phpChecks": {"passed": 20, "failed": 0},
+  "defectProof": {"recipeAsWrittenSendsPkce": false, "fixedClientSendsPkce": true},
+  "casFinal": {"startedAt": "2026-11-04T22:52:51.428Z", "status": "passed", "passed": 2},
+  "entraFinal": {
+    "startedAt": "2026-11-04T22:53:18.569Z",
+    "status": "passed",
+    "passed": 1,
+    "skipped": 2,
+    "skippedReason": "authenticated cases require unattended sign-in; MFA is enrolled"
+  },
+  "interactiveEvidence": {
+    "source": "application request log, paths and status codes only",
+    "observed": [
+      "GET /login 302 to Entra",
+      "GET /login callback 303 after token and Graph profile verification",
+      "GET /profile 200 for the dedicated admin",
+      "POST /logout 302 with session destroyed",
+      "GET /profile 302 after logout (re-authentication required)",
+      "GET /login 401 for the operator account (invalid_employee_profile, no redirect loop)"
+    ],
+    "notObserved": [
+      "rendered uid, roles and biography",
+      "admin /directory 200 listing",
+      "member sign-in and /directory 403",
+      "pre-logout cookie replay"
+    ],
+    "userFormAnswersCountedAsEvidence": false
+  },
+  "credentialExpiresUtc": "2026-11-11T22:50:35Z",
+  "vmAutoShutdown": "daily 00:00 Central; VM found deallocated twice"
+}

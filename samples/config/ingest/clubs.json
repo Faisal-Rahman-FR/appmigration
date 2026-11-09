@@ -1,0 +1,1 @@
+{"@class":"org.apereo.cas.services.CasRegisteredService","id":204,"name":"Student Clubs","serviceId":"https://clubs.fixture.invalid/.*","logoutType":"BACK_CHANNEL","logoutUrl":"https://clubs.fixture.invalid/slo","attributes":["uid","displayName"],"requiredAffiliation":"student","assignedUsers":["carol"]}

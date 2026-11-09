@@ -1,0 +1,9 @@
+name: Demo Portal
+type: module
+description: Synthetic SAML profile and editor authorization
+core_version_requirement: ^10
+package: Demo
+dependencies:
+  - drupal:user
+  - drupal:node
+  - samlauth:samlauth

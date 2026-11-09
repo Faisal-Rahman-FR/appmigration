@@ -1,0 +1,99 @@
+{
+  "recipe": "Spring Boot + Apereo CAS client to Entra ID (OIDC)",
+  "validationDate": "2026-11-04",
+  "verdict": "validated-manually-user-observed-automated-authenticated-tests-mfa-blocked",
+  "fullyVerified": false,
+  "manualAcceptance": {
+    "date": "2026-11-04",
+    "source": "user-reported interactive browser session; not captured by automation",
+    "mfaEnrollmentRequired": true,
+    "adminUser": {"uid": "alice", "employeeNumber": "10001", "role": "hr-admins", "adminPage": 200},
+    "memberUser": {"uid": "carol", "employeeNumber": "10003", "role": "member", "adminPage": 403},
+    "logout": "returned to HR home; profile required new sign-in",
+    "notCaptured": ["timestamps", "old session cookie replay", "real-tenant /slo denial"]
+  },
+  "tenantId": "9b6ae5da-be43-463a-807f-c2cf9ec887db",
+  "clientId": "7c08c2dc-c213-45d6-aa4c-e360729510d5",
+  "applicationObjectId": "473db103-9374-4867-8e16-d227051e32fa",
+  "servicePrincipalId": "9b49cdef-e5c9-4208-95a3-c9abde3c3382",
+  "origin": "https://hr.chris.securitylabworks.com",
+  "deployedMode": "entra",
+  "credentialExpiresUtc": "2026-11-11T17:12:06.1257776Z",
+  "java": {
+    "finishedAt": "2026-11-04T19:51:15Z",
+    "status": "passed",
+    "tests": 15,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "typescript": {
+    "command": "npm run typecheck",
+    "status": "passed",
+    "locations": ["workstation", "existing-linux-vm"]
+  },
+  "legacyBaseline": {
+    "status": "passed",
+    "passed": 2
+  },
+  "casFinal": {
+    "startedAt": "2026-11-04T19:52:24.293Z",
+    "finishedAt": "2026-11-04T19:52:30.297Z",
+    "status": "passed",
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "coverage": [
+      "CAS login, profile, exact group role and logout",
+      "Student denied administrator page",
+      "Alumni logout invalidates HR CAS session",
+      "HR logout invalidates Alumni phpCAS session"
+    ]
+  },
+  "entraFinal": {
+    "startedAt": "2026-11-04T19:52:40.640Z",
+    "finishedAt": "2026-11-04T19:52:49.628Z",
+    "status": "failed",
+    "exitCode": 1,
+    "passed": 1,
+    "failed": 2,
+    "skipped": 2,
+    "tests": [
+      {
+        "title": "UC-01 HR Entra: live discovery and anonymous OIDC challenge",
+        "status": "passed"
+      },
+      {
+        "title": "UC-01 HR Entra: PKCE, employee profile, admin access and session-ending logout",
+        "status": "failed",
+        "blocker": "Tenant requires MFA/enrollment before the dedicated-user callback"
+      },
+      {
+        "title": "UC-01 HR Entra: base member signs in but receives 403 for admin and CAS SLO",
+        "status": "failed",
+        "blocker": "Tenant requires MFA/enrollment before the dedicated-user callback"
+      },
+      {
+        "title": "UC-05 logout invalidates the participating UC-01 CAS app session",
+        "status": "skipped",
+        "reason": "Entra OIDC has no CAS back-channel cross-app logout"
+      },
+      {
+        "title": "UC-01 logout revokes the UC-05 phpCAS session through its persisted signout callback",
+        "status": "skipped",
+        "reason": "Entra OIDC has no CAS back-channel cross-app logout"
+      }
+    ]
+  },
+  "health": {
+    "healthz": {"httpStatus": 200, "status": "ok"},
+    "readyz": {"httpStatus": 200, "status": "ready"}
+  },
+  "outstandingEvidence": [
+    "Automated Playwright run with MFA-enrolled dedicated users",
+    "Old app-session cookie replay after logout in the real tenant",
+    "Real-tenant /slo denial"
+  ],
+  "evidenceDirectoryOnVm": "/srv/idpdemo/source/samples/.local/entra-evidence",
+  "rawReporterFilesOnVm": ["cas-final-results.json", "entra-final-results.json"]
+}

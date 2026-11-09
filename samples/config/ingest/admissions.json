@@ -1,0 +1,1 @@
+{"@class":"org.apereo.cas.services.CasRegisteredService","id":201,"name":"Admissions","serviceId":"^https://admissions[0-9]+\\.fixture\\.invalid/.*","evaluationOrder":10,"attributes":["uid","mail"],"assignedUsers":["frank"]}

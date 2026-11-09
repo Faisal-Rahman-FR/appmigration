@@ -1,0 +1,49 @@
+events {}
+http {
+  server_tokens off;
+  client_max_body_size 8m;
+  proxy_connect_timeout 10s;
+  proxy_read_timeout 120s;
+  proxy_set_header Host $host;
+  proxy_set_header X-Forwarded-Host $host;
+  proxy_set_header X-Forwarded-Proto https;
+  proxy_set_header X-Forwarded-Port 443;
+  proxy_set_header X-Forwarded-For $remote_addr;
+  ssl_certificate /tls/gateway.crt;
+  ssl_certificate_key /tls/gateway.key;
+  ssl_protocols TLSv1.2 TLSv1.3;
+  server {
+    listen 443 ssl default_server;
+    server_name _;
+    location = /healthz { default_type application/json; return 200 '{"status":"ok"}'; }
+    location / { return 404; }
+  }
+  server {
+    listen 443 ssl; server_name @@CAS_HOST@@;
+    location = /healthz { proxy_pass http://cas:8080/cas/healthz; }
+    location = /readyz { proxy_pass http://cas:8080/cas/readyz; }
+    location = / { return 302 /cas/login; }
+    location / { proxy_pass http://cas:8080; }
+  }
+  server {
+    listen 443 ssl; server_name @@IDP_HOST@@;
+    location = /healthz { proxy_pass http://idp:8080/idp/healthz.jsp; }
+    location = /readyz { proxy_pass http://idp:8080/idp/readyz.jsp; }
+    location = / { return 302 /idp/; }
+    location /idp { proxy_pass http://idp:8080; }
+  }
+  server {
+    listen 443 ssl; server_name @@HR_HOST@@;
+    location = /slo { allow 172.30.87.10; deny all; proxy_pass http://hr:8080; }
+    location / { proxy_pass http://hr:8080; }
+  }
+  server {
+    listen 443 ssl; server_name @@DRUPAL_HOST@@;
+    location / { proxy_pass http://drupal:80; }
+  }
+  server {
+    listen 443 ssl; server_name @@ALUMNI_HOST@@;
+    location = /slo { allow 172.30.87.10; deny all; proxy_pass http://apache:80; }
+    location / { proxy_pass http://apache:80; }
+  }
+}

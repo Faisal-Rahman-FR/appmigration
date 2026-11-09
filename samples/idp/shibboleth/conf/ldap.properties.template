@@ -1,0 +1,13 @@
+idp.authn.LDAP.authenticator=bindSearchAuthenticator
+idp.authn.LDAP.ldapURL=ldap://ldap:389
+idp.authn.LDAP.useStartTLS=false
+idp.authn.LDAP.useSSL=false
+idp.authn.LDAP.baseDN=ou=people,dc=demo,dc=test
+idp.authn.LDAP.subtreeSearch=true
+idp.authn.LDAP.userFilter=(uid={user})
+idp.authn.LDAP.bindDN=cn=readonly,dc=demo,dc=test
+idp.authn.LDAP.bindDNCredential=@@LDAP_BIND_PASSWORD@@
+idp.attribute.resolver.LDAP.ldapURL=ldap://ldap:389
+idp.attribute.resolver.LDAP.baseDN=ou=people,dc=demo,dc=test
+idp.attribute.resolver.LDAP.bindDN=cn=readonly,dc=demo,dc=test
+idp.attribute.resolver.LDAP.bindDNCredential=@@LDAP_BIND_PASSWORD@@

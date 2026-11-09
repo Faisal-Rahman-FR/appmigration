@@ -1,0 +1,31 @@
+<SPConfig xmlns="urn:mace:shibboleth:3.0:native:sp:config" clockSkew="180">
+  <InProcess>
+    <ISAPI normalizeRequest="true" safeHeaderNames="true" useVariables="true" useHeaders="false">
+      <Site id="2" name="@@STUDENT_HOST@@" scheme="https" port="443"/>
+    </ISAPI>
+  </InProcess>
+  <RequestMapper type="Native">
+    <RequestMap>
+      <Host name="@@STUDENT_HOST@@" scheme="https" port="443" applicationId="default" authType="shibboleth">
+        <Path name="Student" requireSession="true"/>
+      </Host>
+    </RequestMap>
+  </RequestMapper>
+  <ApplicationDefaults entityID="@@STUDENT_ORIGIN@@/shibboleth" REMOTE_USER="eppn" signing="true" encryption="true">
+    <Sessions lifetime="28800" timeout="3600" relayState="ss:mem" checkAddress="false" handlerSSL="true" cookieProps="https" sameSiteSession="None">
+      <SSO entityID="@@IDP_ORIGIN@@/idp/shibboleth">SAML2</SSO>
+      <Logout>SAML2 Local</Logout>
+      <Handler type="MetadataGenerator" Location="/Metadata" signing="false"/>
+      <Handler type="Status" Location="/Status" acl="127.0.0.1 ::1"/>
+      <Handler type="Session" Location="/Session" showAttributeValues="false"/>
+    </Sessions>
+    <Errors supportContact="synthetic-demo@example.invalid" helpLocation="/" styleSheet="/shibboleth-sp/main.css"/>
+    <MetadataProvider type="XML" path="idp-metadata.xml"/>
+    <AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>
+    <AttributeResolver type="Query" subjectMatch="true"/>
+    <AttributeFilter type="XML" validate="true" path="attribute-policy.xml"/>
+    <CredentialResolver type="File" key="student.key" certificate="student.crt"/>
+  </ApplicationDefaults>
+  <SecurityPolicyProvider type="XML" validate="true" path="security-policy.xml"/>
+  <ProtocolProvider type="XML" validate="true" reloadChanges="false" path="protocols.xml"/>
+</SPConfig>

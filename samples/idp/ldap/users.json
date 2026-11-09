@@ -1,0 +1,9 @@
+[
+  {"uid":"alice","mail":"alice@demo.test","displayName":"Alice Avery","employeeNumber":"10001","eduPersonAffiliation":["faculty","member","alum"],"eduPersonPrincipalName":"alice@demo.test","givenName":"Alice","sn":"Avery","groups":["research","hr-admins","alumni"]},
+  {"uid":"bob","mail":"bob@demo.test","displayName":"Bob Bennett","employeeNumber":"10002","eduPersonAffiliation":["staff","member"],"eduPersonPrincipalName":"bob@demo.test","givenName":"Bob","sn":"Bennett","groups":["hr-admins","registrar","vpn-users"]},
+  {"uid":"carol","mail":"carol@demo.test","displayName":"Carol Chen","employeeNumber":"10003","eduPersonAffiliation":["student","member"],"eduPersonPrincipalName":"carol@demo.test","givenName":"Carol","sn":"Chen","groups":["students"]},
+  {"uid":"dave","mail":"dave@demo.test","displayName":"Dave Diaz","employeeNumber":"10004","eduPersonAffiliation":["student","employee","member"],"eduPersonPrincipalName":"dave@demo.test","givenName":"Dave","sn":"Diaz","groups":["students","research"]},
+  {"uid":"erin","mail":"erin@demo.test","displayName":"Erin Ellis","employeeNumber":"10005","eduPersonAffiliation":["alum"],"eduPersonPrincipalName":"erin@demo.test","givenName":"Erin","sn":"Ellis","groups":["alumni"]},
+  {"uid":"frank","mail":"frank@demo.test","displayName":"Frank Foster","employeeNumber":"10006","eduPersonAffiliation":["staff","member"],"eduPersonPrincipalName":"frank@demo.test","givenName":"Frank","sn":"Foster","groups":["admissions"]},
+  {"uid":"grace","mail":"grace@demo.test","displayName":"Grace Green","employeeNumber":"10007","eduPersonAffiliation":["affiliate"],"eduPersonPrincipalName":"grace@demo.test","givenName":"Grace","sn":"Green","groups":["guests"]}
+]

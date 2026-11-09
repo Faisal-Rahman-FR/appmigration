@@ -1,0 +1,20 @@
+{
+  "name":"demo/research-publishing",
+  "description":"Drupal 10 research publishing with Shibboleth SAML",
+  "type":"project",
+  "license":"GPL-2.0-or-later",
+  "repositories":[{"type":"composer","url":"https://packages.drupal.org/8"}],
+  "require":{
+    "php":"^8.3",
+    "composer/installers":"2.3.0",
+    "drupal/core-recommended":"10.6.20",
+    "drupal/core-composer-scaffold":"10.6.20",
+    "drupal/samlauth":"3.14.0",
+    "drush/drush":"12.5.3"
+  },
+  "config":{"allow-plugins":{"composer/installers":true,"drupal/core-composer-scaffold":true},"sort-packages":true},
+  "extra":{
+    "drupal-scaffold":{"locations":{"web-root":"web/"}},
+    "installer-paths":{"web/core":["type:drupal-core"],"web/modules/contrib/{$name}":["type:drupal-module"],"web/themes/contrib/{$name}":["type:drupal-theme"]}
+  }
+}

@@ -1,0 +1,17 @@
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:c="http://www.springframework.org/schema/c" xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util https://www.springframework.org/schema/util/spring-util.xsd">
+  <bean id="shibboleth.UnverifiedRelyingParty" parent="RelyingParty"/>
+  <bean id="shibboleth.DefaultRelyingParty" parent="RelyingParty">
+    <property name="profileConfigurations"><list>
+      <bean parent="SAML2.SSO" p:signResponses="true" p:signAssertions="true" p:encryptAssertions="true" p:postAuthenticationFlows=""/>
+      <bean parent="SAML2.Logout"/>
+    </list></property>
+  </bean>
+  <util:list id="shibboleth.RelyingPartyOverrides">
+    <bean parent="RelyingPartyByName" c:relyingPartyIds="#{{'@@DRUPAL_ORIGIN@@/saml/metadata','@@STUDENT_ORIGIN@@/shibboleth'}}">
+      <property name="profileConfigurations"><list>
+        <bean parent="SAML2.SSO" p:signResponses="true" p:signAssertions="true" p:encryptAssertions="true" p:postAuthenticationFlows=""/>
+        <bean parent="SAML2.Logout"/>
+      </list></property>
+    </bean>
+  </util:list>
+</beans>

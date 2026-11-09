@@ -1,0 +1,33 @@
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)'==''">Debug</Configuration>
+    <Platform Condition="'$(Platform)'==''">AnyCPU</Platform>
+    <ProjectGuid>{6C8CE27D-FC9E-47DF-A5D0-84EB843F9E85}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Demo.StudentRecords</RootNamespace>
+    <AssemblyName>StudentRecords</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>7.3</LangVersion>
+    <OutputPath>bin\</OutputPath>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System"/><Reference Include="System.Core"/><Reference Include="System.Web"/><Reference Include="System.Web.Extensions"/><Reference Include="System.Configuration"/><Reference Include="System.Xml"/>
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.9"/>
+    <PackageReference Include="Microsoft.AspNet.Razor" Version="3.2.9"/>
+    <PackageReference Include="Microsoft.AspNet.WebPages" Version="3.2.9"/>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Global.asax.cs"/>
+    <Compile Include="App_Start\RouteConfig.cs"/>
+    <Compile Include="Controllers\HomeController.cs"/>
+    <Compile Include="Controllers\StudentController.cs"/>
+    <Compile Include="Identity\TrustedSpIdentity.cs"/>
+    <Compile Include="Models\StudentRecord.cs"/>
+    <Content Include="Global.asax"/><Content Include="Web.config"/>
+    <Content Include="Views\**\*.cshtml"/><Content Include="Views\Web.config"/>
+    <Content Include="App_Data\student-records.json"/>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets"/>
+</Project>

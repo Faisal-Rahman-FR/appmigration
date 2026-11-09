@@ -1,0 +1,5 @@
+<Attributes xmlns="urn:mace:shibboleth:2.0:attribute-map" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Attribute name="eduPersonPrincipalName" nameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic" id="eppn"><AttributeDecoder xsi:type="ScopedAttributeDecoder" caseSensitive="true"/></Attribute>
+  <Attribute name="eduPersonAffiliation" nameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic" id="unscoped-affiliation"><AttributeDecoder xsi:type="StringAttributeDecoder" caseSensitive="true"/></Attribute>
+  <Attribute name="displayName" nameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic" id="displayName"><AttributeDecoder xsi:type="StringAttributeDecoder" caseSensitive="false"/></Attribute>
+</Attributes>
