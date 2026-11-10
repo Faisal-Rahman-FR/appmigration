@@ -1,6 +1,6 @@
 # Entra setup: tenant objects
 
-These are **templates**. They change a real directory: review, run them in a test tenant, and confirm each object with the user first. None of this was executed against a tenant while writing the skill; verify flags against your installed `az` version.
+These are **templates**. They change a real directory: review, run them in a test tenant, and confirm each object with the user first. The SAML (3b) and OIDC (3a) flows were later run against a real tenant for the Drupal, Student and Events pilots; the corrections from those runs are marked **validated** below. Verify flags against your installed `az` version.
 
 ## Prerequisites and permissions
 
@@ -60,6 +60,7 @@ $secret = az ad app credential reset --id $app.appId --append --display-name dem
 - For authorization-code OIDC, implicit ID/access-token issuance is not needed. The HR pilot keeps both implicit flags off and explicitly adds S256 PKCE in Spring.
 - Register the exact post-logout return in `web.redirectUris` as well as the callback. `web.logoutUrl` is the **front-channel logout callback**, not the browser's post-logout return URI; do not confuse them.
 - Prefer a **certificate** or federated credential over a client secret for production; secrets expire (maximum 24 months).
+- **Secret delivery without exposing it (validated, Events pilot):** create the credential with `az ad app credential reset ... --query password -o tsv` into a variable only, encrypt it (RSA-OAEP-SHA256) to a one-time public key generated on the target host, decrypt there into a root-only `0600` file, then delete the key pair and ciphertext. Mount it into the container as a `0600` file above the web root and point the app at it with a `*_SECRET_FILE` variable. Never print it, write it locally, put it in the repo, or pass it through chat. Record its expiry date and a rotation owner.
 - If the tenant blocks user consent, delegated permissions such as Graph `User.Read` need an admin grant ("Need admin approval" at sign-in). Create one `oauth2PermissionGrants` entry (`consentType: AllPrincipals`, scope `User.Read`) for that app only. The Graph CLI token may first need an interactive `az login` (continuous access evaluation).
 - Default delegated permission `User.Read` is enough for sign-in; add nothing else.
 
@@ -81,6 +82,12 @@ az rest --method POST --url "https://graph.microsoft.com/v1.0/servicePrincipals/
   --headers "Content-Type=application/json" --body '{"displayName":"CN=demo-student-sp","endDateTime":"2028-11-01T00:00:00Z"}'
 ```
 
+- **Validated Graph order and pitfalls:**
+  1. A non-gallery app ships default app roles (`User`, `msiam_access`). A PATCH that replaces `appRoles` fails with `CannotDeleteOrUpdateEnabledEntitlement` until those are set `isEnabled:false` in a first call; then send the real roles in a second call.
+  2. After `addTokenSigningCertificate`, PATCH the service principal with `preferredTokenSigningKeyThumbprint` (the returned `thumbprint`) so Entra signs with that certificate; the order matters.
+  3. Custom claims (`uid` from `mailnickname`, `appRoles` from `user.assignedroles`) need a **claims mapping policy** (`POST /policies/claimsMappingPolicies`, then `POST /servicePrincipals/{id}/claimsMappingPolicies/$ref`).
+  4. Do not name a claim `roles` if the target app already uses that name for its own roles (Drupal); use `appRoles`.
+  5. Entra signs the assertion, not the response, by default; configure the SP to require signed assertions, not signed responses (samlauth: `security_messages_sign: false`, `security_assertions_signed: true`). Do not request an AuthnContext (`AADSTS75011`). Leave assertion encryption off unless Token encryption is configured.
 - Easier alternative for the same result: portal, Enterprise applications, New application, Create your own, then **Single sign-on, SAML, Upload metadata file** with the SP's metadata (`/Shibboleth.sso/Metadata`, `/saml/metadata`).
 - Set claims (Attributes and Claims) in the portal, or with a claims policy (see [claims-and-attributes](./claims-and-attributes.md)).
 - IdP metadata for the SP: `https://login.microsoftonline.com/<tenantId>/federationmetadata/2007-06/federationmetadata.xml?appid=<appId>` (per-app signing certificate). IdP entity ID `https://sts.windows.net/<tenantId>/`.

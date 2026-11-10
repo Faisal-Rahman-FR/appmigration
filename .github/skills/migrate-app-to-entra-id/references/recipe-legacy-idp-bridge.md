@@ -43,6 +43,12 @@ Shibboleth IdP 5 can delegate authentication upstream; the supported mechanisms 
 
 The Student SP and Drupal see the same IdP and the same attributes. Session policy (`favorSSO`, session timeout) and MFA now depend on Entra plus the IdP session; document both.
 
+## Operational findings (validated while registering the Events app in the demo CAS)
+
+- **Restart CAS after adding a service.** With the JSON service registry, a new file is not served until CAS is restarted: the registry kept logging `Loaded [2]` for 25 minutes after the file was staged, and the login page said "Application Not Authorized". Apply the same check to any new registered service (including the bridge's per-service delegation policy).
+- Set `logoutType` explicitly per service. A `mod_auth_cas` client has no back-channel endpoint, so register it with `logoutType NONE` and expect CAS logout to leave that app's own session alive.
+- Edge-only authentication (`valid-user`) is authentication, not authorization. Keep an explicit allow list or role check in front of protected files, or any account the bridge authenticates can reach them.
+
 ## What the bridge does not give you
 
 - No retirement of CAS, Shibboleth or LDAP; you now operate two identity systems.
