@@ -1,0 +1,5 @@
+# The export is a static file, so the PHP code never sees the request: only the web server can protect it.
+# This list duplicates the event_staff table and drifts from it.
+AuthType CAS
+AuthName "Campus Events admin"
+Require user alice

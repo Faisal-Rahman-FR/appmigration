@@ -9,7 +9,7 @@ const save = (p, value) => { mkdirSync(dirname(p), {recursive:true}); writeFileS
 const values = Object.fromEntries(read('.env.sample').split(/\r?\n/).filter(l=>/^[A-Z_]+=/.test(l)).map(l=>l.split(/=(.*)/s).slice(0,2)));
 // Optional origin overrides are passed as process environment, not treated as shell code.
 for (const k of Object.keys(values)) if (process.env[k]) values[k] = process.env[k];
-for (const k of ['CAS_ORIGIN','IDP_ORIGIN','HR_ORIGIN','DRUPAL_ORIGIN','ALUMNI_ORIGIN','STUDENT_ORIGIN']) {
+for (const k of ['CAS_ORIGIN','IDP_ORIGIN','HR_ORIGIN','DRUPAL_ORIGIN','ALUMNI_ORIGIN','STUDENT_ORIGIN','EVENTS_ORIGIN']) {
   const u = new URL(values[k]);
   if (u.protocol !== 'https:' || u.pathname !== '/' || u.search || u.hash || u.username || u.password || (u.port && u.port !== '443')) throw Error(`${k} must be an HTTPS origin on port 443.`);
   values[k] = u.origin;
@@ -39,11 +39,14 @@ render('idp/cas/cas.properties.template','.local/cas/cas.properties');
 const manifest=JSON.parse(read('manifest.yaml'));
 for (const [id,serviceId,attrs] of [
   ['hr',values.HR_ORIGIN,['uid','mail','displayName','employeeNumber','memberOf','eduPersonAffiliation']],
-  ['alumni',values.ALUMNI_ORIGIN,['uid','mail','displayName','eduPersonAffiliation']]
+  ['alumni',values.ALUMNI_ORIGIN,['uid','mail','displayName','eduPersonAffiliation']],
+  ['events',values.EVENTS_ORIGIN,['uid']]
 ]) {
   const sample=manifest.samples.find(sample=>sample.id===id);
   if(!sample)throw Error(`Missing manifest identity for ${id}`);
-  save(`.local/cas/services/${id}.json`,JSON.stringify({'@class':'org.apereo.cas.services.CasRegisteredService',id:id==='hr'?101:102,name:sample.name,description:`${sample.useCase} — ${sample.name}`,serviceId:serviceId.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'/.*',logoutType:'BACK_CHANNEL',logoutUrl:serviceId+'/slo',attributeReleasePolicy:{'@class':'org.apereo.cas.services.ReturnAllowedAttributeReleasePolicy',allowedAttributes:['java.util.ArrayList',attrs]}},null,2));
+  // mod_auth_cas does not implement back-channel single logout, so the events service registers none.
+  const logout=id==='events'?{logoutType:'NONE'}:{logoutType:'BACK_CHANNEL',logoutUrl:serviceId+'/slo'};
+  save(`.local/cas/services/${id}.json`,JSON.stringify({'@class':'org.apereo.cas.services.CasRegisteredService',id:{hr:101,alumni:102,events:103}[id],name:sample.name,description:`${sample.useCase} — ${sample.name}`,serviceId:serviceId.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'/.*',...logout,attributeReleasePolicy:{'@class':'org.apereo.cas.services.ReturnAllowedAttributeReleasePolicy',allowedAttributes:['java.util.ArrayList',attrs]}},null,2));
 }
 for (const f of ['idp.properties','ldap.properties','attribute-resolver.xml','attribute-filter.xml','relying-party.xml','metadata-providers.xml','saml-nameid.properties']) render(`idp/shibboleth/conf/${f}.template`,`.local/shibboleth/conf/${f}`);
 render('idp/shibboleth/metadata/sp-metadata.xml.template','.local/shibboleth/metadata/sp-metadata.xml');

@@ -68,7 +68,7 @@ tar xzf /srv/idpdemo/source.tgz -C /srv/idpdemo/source
 cd /srv/idpdemo/source/samples
 sed -i 's/\r$//' database/02-grants.sh
 if ! test -f .local/demo.env; then
-  for app in cas idp hr drupal alumni student; do
+  for app in cas idp hr drupal alumni events student; do
     printf '%s_ORIGIN=https://%s.%s\n' "$(echo "$app" | tr '[:lower:]' '[:upper:]')" "$app" "$DEMO_DOMAIN"
   done > /srv/idpdemo/cloud.env
   printf 'PUBLIC_BIND_IP=0.0.0.0\n' >> /srv/idpdemo/cloud.env

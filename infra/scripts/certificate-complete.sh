@@ -14,7 +14,7 @@ if ! openssl verify -verify_hostname "cas.$DEMO_DOMAIN" \
     --key-file "$PWD/.local/tls/gateway.key" --fullchain-file "$PWD/.local/tls/gateway.crt" > /srv/idpdemo/acme-install.log 2>&1
 fi
 openssl x509 -in .local/tls/gateway.crt -noout -checkend 604800
-for app in cas idp hr drupal alumni; do
+for app in cas idp hr drupal alumni events; do
   addresses=$(getent ahostsv4 "$app.$DEMO_DOMAIN" | awk '{print $1}' | sort -u)
   test -n "$addresses"
 done

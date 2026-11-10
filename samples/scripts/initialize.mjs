@@ -10,7 +10,7 @@ if(existsSync('.local/demo.env'))throw new Error('Already initialized. Preserve 
 const parse=p=>Object.fromEntries(readFileSync(p,'utf8').split(/\r?\n/).filter(l=>/^[A-Z_]+=/.test(l)).map(l=>l.split(/=(.*)/s).slice(0,2)));
 const settings={...parse('.env.sample'),...(process.argv[2]?parse(process.argv[2]):{})};
 for(const [k,v] of Object.entries(settings)) if(!process.env[k])process.env[k]=v;
-const origins=['CAS_ORIGIN','IDP_ORIGIN','HR_ORIGIN','DRUPAL_ORIGIN','ALUMNI_ORIGIN','STUDENT_ORIGIN'].map(k=>{
+const origins=['CAS_ORIGIN','IDP_ORIGIN','HR_ORIGIN','DRUPAL_ORIGIN','ALUMNI_ORIGIN','STUDENT_ORIGIN','EVENTS_ORIGIN'].map(k=>{
   const u=new URL(process.env[k]);
   if(u.protocol!=='https:' || u.pathname!=='/' || u.username || u.password || u.search || u.hash || (u.port&&u.port!=='443'))throw new Error(`${k} must be an HTTPS origin on443`);
   return u.hostname;

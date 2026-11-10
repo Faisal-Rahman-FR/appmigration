@@ -1,0 +1,3 @@
+AuthType CAS
+AuthName "Campus Events admin"
+Require valid-user

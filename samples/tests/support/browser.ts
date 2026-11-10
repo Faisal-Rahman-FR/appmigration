@@ -4,7 +4,7 @@ import {origin,originKeys,password} from './environment';
 export const test=base.extend({
   context:async({context},use)=>{
     const allowed=new Set([...originKeys,...(process.env.RUN_DOTNET_TESTS==='1'?['STUDENT_ORIGIN']:[])].map(origin));
-    if(process.env.DEMO_AUTH==='entra' || process.env.ALUMNI_AUTH==='entra' || process.env.DRUPAL_AUTH==='entra' || process.env.STUDENT_AUTH==='entra') {
+    if(process.env.DEMO_AUTH==='entra' || process.env.ALUMNI_AUTH==='entra' || process.env.DRUPAL_AUTH==='entra' || process.env.STUDENT_AUTH==='entra' || process.env.EVENTS_AUTH==='entra') {
       for(const host of ['login.microsoftonline.com','aadcdn.msauth.net','aadcdn.msftauth.net','logincdn.msauth.net'])
         allowed.add(`https://${host}`);
     }

@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteRule ^healthz$ healthz.php [L]
+RewriteRule ^readyz$ readyz.php [L]
+DirectoryIndex index.php
+Options -Indexes

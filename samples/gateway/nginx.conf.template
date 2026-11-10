@@ -42,6 +42,10 @@ http {
     location / { proxy_pass http://drupal:80; }
   }
   server {
+    listen 443 ssl; server_name @@EVENTS_HOST@@;
+    location / { proxy_pass http://events:80; proxy_cookie_flags ~ secure; }
+  }
+  server {
     listen 443 ssl; server_name @@ALUMNI_HOST@@;
     location = /slo { allow 172.30.87.10; deny all; proxy_pass http://apache:80; }
     location / { proxy_pass http://apache:80; }

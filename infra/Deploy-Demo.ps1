@@ -34,7 +34,7 @@ if (-not $IsWindows) { throw 'Run this script from Windows PowerShell 7: it buil
 
 $workspace = Split-Path $PSScriptRoot -Parent
 $stageOrder = @('Provision','Dns','Build','CertificateRequest','DnsWait','CertificateComplete','Windows','Verify')
-$appHosts = @('cas','idp','hr','drupal','alumni','student')
+$appHosts = @('cas','idp','hr','drupal','alumni','events','student')
 $guidPattern = '^[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}$'
 $safeValue = '^[A-Za-z0-9._:/@+-]*$'
 
@@ -1011,6 +1011,7 @@ function Show-Summary {
   Write-Host "    UC-01 HR Self-Service         https://hr.$domain"
   Write-Host "    UC-04 Drupal (samlauth)       https://drupal.$domain/saml/login"
   Write-Host "    UC-05 Alumni Directory        https://alumni.$domain"
+  Write-Host "    UC-06 Campus Events (cPanel)  https://events.$domain/admin/"
   Write-Host "    UC-03 Student Records (IIS)   https://student.$domain/Student/Profile"
   Write-Host ''
   Write-Host '  Sign-in: short user name (alice, bob, carol, dave, erin, frank, grace). Passwords are random:'

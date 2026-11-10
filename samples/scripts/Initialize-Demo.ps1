@@ -29,7 +29,7 @@ foreach ($name in $names) {
   $leafReq.CertificateExtensions.Add([System.Security.Cryptography.X509Certificates.X509KeyUsageExtension]::new(([System.Security.Cryptography.X509Certificates.X509KeyUsageFlags]::DigitalSignature -bor [System.Security.Cryptography.X509Certificates.X509KeyUsageFlags]::KeyEncipherment),$true))
   if ($name -eq 'gateway') {
     $san = [System.Security.Cryptography.X509Certificates.SubjectAlternativeNameBuilder]::new()
-    foreach($k in @('CAS_ORIGIN','IDP_ORIGIN','HR_ORIGIN','DRUPAL_ORIGIN','ALUMNI_ORIGIN','STUDENT_ORIGIN')) { $san.AddDnsName(([Uri]$origins[$k]).DnsSafeHost) }
+    foreach($k in @('CAS_ORIGIN','IDP_ORIGIN','HR_ORIGIN','DRUPAL_ORIGIN','ALUMNI_ORIGIN','STUDENT_ORIGIN','EVENTS_ORIGIN')) { $san.AddDnsName(([Uri]$origins[$k]).DnsSafeHost) }
     $leafReq.CertificateExtensions.Add($san.Build())
     $eku=[System.Security.Cryptography.OidCollection]::new(); [void]$eku.Add([System.Security.Cryptography.Oid]::new('1.3.6.1.5.5.7.3.1'))
     $leafReq.CertificateExtensions.Add([System.Security.Cryptography.X509Certificates.X509EnhancedKeyUsageExtension]::new($eku,$false))

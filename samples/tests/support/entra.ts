@@ -4,8 +4,8 @@ import {Page} from '@playwright/test';
 import {expect,origin} from './browser';
 import {samplesRoot} from './environment';
 
-export async function entraLogin(page:Page,uid:'alice'|'carol',app:'HR_ORIGIN'|'ALUMNI_ORIGIN'|'DRUPAL_ORIGIN'|'STUDENT_ORIGIN'='HR_ORIGIN'):Promise<void> {
-  const landing=origin(app)+(app==='DRUPAL_ORIGIN'?'/demo/profile?check_logged_in=1':app==='STUDENT_ORIGIN'?'/Student/Profile':'/profile');
+export async function entraLogin(page:Page,uid:'alice'|'carol',app:'HR_ORIGIN'|'ALUMNI_ORIGIN'|'DRUPAL_ORIGIN'|'STUDENT_ORIGIN'|'EVENTS_ORIGIN'='HR_ORIGIN'):Promise<void> {
+  const landing=origin(app)+(app==='DRUPAL_ORIGIN'?'/demo/profile?check_logged_in=1':app==='STUDENT_ORIGIN'?'/Student/Profile':app==='EVENTS_ORIGIN'?'/admin/':'/profile');
   const credentials:unknown=JSON.parse(readFileSync(resolve(samplesRoot,'.local','entra-test-users.json'),'utf8'));
   if(typeof credentials!=='object' || credentials===null || !(uid in credentials))
     throw new Error(`Missing dedicated Entra credentials for ${uid}; use the protected local credential file.`);

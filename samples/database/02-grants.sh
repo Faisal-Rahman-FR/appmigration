@@ -7,4 +7,6 @@ CREATE USER IF NOT EXISTS 'demo'@'%' IDENTIFIED BY '$DB_PASSWORD';
 GRANT SELECT ON alumni.* TO 'demo'@'%';
 GRANT INSERT, UPDATE, DELETE ON alumni.cas_sessions TO 'demo'@'%';
 GRANT ALL PRIVILEGES ON drupal.* TO 'demo'@'%';
+GRANT SELECT ON events.* TO 'demo'@'%';
+GRANT UPDATE ON events.events TO 'demo'@'%';
 SQL

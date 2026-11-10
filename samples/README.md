@@ -29,11 +29,11 @@ sh scripts/start.sh
 ```
 These scripts **build images**; do not execute before approval. They do not install/start Docker, provision cloud resources, configure public ingress or install IIS. Linux `initialize.mjs` and Windows `Initialize-Demo.ps1` generate actual local CA/leaf keys, LDAP password hashes, per-user random credentials, service configs and metadata under `.local` first. `.local/demo.env` is the Compose environment. Do not reinitialize against existing persistent volumes: credentials and DB/IdP state must be preserved together.
 
-For custom public HTTPS origins, copy `.env.sample` to a protected operator file and set all six `*_ORIGIN` values before first initialization. Windows: `Initialize-Demo.ps1 -EnvironmentFile C:\protected\demo-origins.env`; Linux: `node scripts/initialize.mjs /protected/demo-origins.env`. Origins must be HTTPS port443, no base paths; generated certificates, CAS regexes, SAML entity IDs/ACS and DNS aliases derive from them. Set DNS/hosts for all Linux origins to the Linux host and student origin to Windows. The same hostnames must resolve from browsers and server backends. Restarting with a different environment alone does not rewrite existing registrations.
+For custom public HTTPS origins, copy `.env.sample` to a protected operator file and set all seven `*_ORIGIN` values before first initialization. Windows: `Initialize-Demo.ps1 -EnvironmentFile C:\protected\demo-origins.env`; Linux: `node scripts/initialize.mjs /protected/demo-origins.env`. Origins must be HTTPS port443, no base paths; generated certificates, CAS regexes, SAML entity IDs/ACS and DNS aliases derive from them. Set DNS/hosts for all Linux origins to the Linux host and student origin to Windows. The same hostnames must resolve from browsers and server backends. Restarting with a different environment alone does not rewrite existing registrations.
 
 Default hostnames on the workstation:
 ```
-127.0.0.1 cas.demo.test idp.demo.test hr.demo.test drupal.demo.test alumni.demo.test
+127.0.0.1 cas.demo.test idp.demo.test hr.demo.test drupal.demo.test alumni.demo.test events.demo.test
 ```
 `student.demo.test` points to the separate Windows IIS host. **Trust `.local/tls/ca.crt` in browsers/OS**. On Windows as the operator:
 ```powershell
@@ -52,6 +52,7 @@ Only gateway TCP443 is published, bound to **loopback by default**. LDAP389, Mar
 | UC-03 | Student Records Portal | `https://student.demo.test` `/Student/Profile` `/Student/Records` `/Student/Registrar` | Windows Shibboleth SP → same IdP | carol student, bob registrar |
 | UC-04 | Drupal Research Publishing | `https://drupal.demo.test` `/demo/profile` `/demo/editor` | Shibboleth `/idp/profile/SAML2/Redirect/SSO` | alice editor, carol noneditor |
 | UC-05 | Alumni Directory | `https://alumni.demo.test` `/profile` `/directory` | real vendored phpCAS/CAS3 | erin/alice alum; carol denied directory |
+| UC-06 | Campus Events Admin | `https://events.demo.test` `/` `/admin/` `/admin/staff.php` | Apache `mod_auth_cas` (CAS2 validate) in `.htaccess`; no sign-in code in PHP | alice admin, bob organizer; carol signs in, denied |
 
 All runnable applications expose anonymous direct `/healthz` returning200 JSON `{"status":"ok"}` and dependency-aware `/readyz` returning200 or503. Compose readiness uses LDAP search, MariaDB's image health script, CAS dependency readiness, IdP's own status and each application as appropriate. FPM uses a direct socket health probe; Apache proves an actual PHP HTTP response. `/readyz` on alumni additionally checks CAS and its SQL table. IdP built-in status is private; never publish diagnostic attributes.
 

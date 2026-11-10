@@ -1,0 +1,3 @@
+# EVENTS_AUTH=entra: no Apache auth module. This PHP guard signs the user in with Entra ID (OIDC) and sets REMOTE_USER,
+# the variable mod_auth_cas used to set, so the application code does not change.
+php_value auto_prepend_file /var/www/events/src/entra_guard.php

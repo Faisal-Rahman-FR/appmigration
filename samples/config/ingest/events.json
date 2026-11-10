@@ -1,0 +1,1 @@
+{"@class":"org.apereo.cas.services.CasRegisteredService","useCase":"UC-06","id":103,"name":"Campus Events Admin","serviceId":"https://events.demo.test/.*","logoutType":"NONE","attributeReleasePolicy":{"@class":"org.apereo.cas.services.ReturnAllowedAttributeReleasePolicy","allowedAttributes":["java.util.ArrayList",["uid"]]}}

@@ -18,4 +18,4 @@ export function password(uid:string):string {
   if(!credentials[uid]) throw new Error(`No generated synthetic password for ${uid}`);
   return credentials[uid];
 }
-export const originKeys=['CAS_ORIGIN','IDP_ORIGIN','HR_ORIGIN','DRUPAL_ORIGIN','ALUMNI_ORIGIN'];
+export const originKeys=['CAS_ORIGIN','IDP_ORIGIN','HR_ORIGIN','DRUPAL_ORIGIN','ALUMNI_ORIGIN','EVENTS_ORIGIN'];

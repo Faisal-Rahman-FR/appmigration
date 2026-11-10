@@ -14,7 +14,7 @@
     "deployedBy": {"type": "string", "description": "Optional tag value. Defaults to your user principal name."},
     "operatorObjectId": {"type": "string", "description": "Optional Entra object ID granted Key Vault/Storage data roles. Defaults to the signed-in user."},
     "operatorPrincipalType": {"enum": ["User", "ServicePrincipal", "Group"], "default": "User", "description": "Type of operatorObjectId. Anything other than User requires operatorObjectId."},
-    "domain": {"type": "string", "description": "A DNS name you control, for example demo.contoso.com. Apps are served at cas/idp/hr/drupal/alumni/student.<domain>; a wildcard certificate is issued."},
+    "domain": {"type": "string", "description": "A DNS name you control, for example demo.contoso.com. Apps are served at cas/idp/hr/drupal/alumni/events/student.<domain>; a wildcard certificate is issued."},
     "artifactTransfer": {"enum": ["direct", "storage"], "default": "direct", "description": "direct: no Storage account or Key Vault; artifacts go through the VM command channel and a private peer-only handoff (works where policy forces those services private; Contributor is enough). storage: use Storage and Key Vault with RBAC (needs role-assignment permission and public endpoints). Cannot change after deployment."},
     "dns": {
       "type": "object",

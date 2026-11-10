@@ -5,11 +5,11 @@ Deploys the whole demo into **any Azure tenant and subscription** from one JSON 
 | Component | Where | What |
 |---|---|---|
 | Apereo CAS 7 + Shibboleth IdP 5 + OpenLDAP (7 synthetic users) + MariaDB | Linux VM (Docker Compose) | Identity providers and shared directory |
-| UC-01 HR Self-Service (Spring Boot, CAS) · UC-04 Drupal 10 (samlauth) · UC-05 Alumni Directory (PHP, phpCAS) | Linux VM | Sample apps to migrate |
+| UC-01 HR Self-Service (Spring Boot, CAS) · UC-04 Drupal 10 (samlauth) · UC-05 Alumni Directory (PHP, phpCAS) · UC-06 Campus Events Admin (PHP, Apache `mod_auth_cas`) | Linux VM | Sample apps to migrate |
 | UC-03 Student Records (ASP.NET Framework 4.8 behind the native Shibboleth SP) | Windows Server 2022 VM (IIS) | Windows sample |
 | Storage, Key Vault (only with `artifactTransfer: storage`), Log Analytics, App Insights, VNet/NSGs, 2 static public IPs | Azure | Supporting resources |
 
-Apps are served at `https://<app>.<your-domain>` (`cas`, `idp`, `hr`, `drupal`, `alumni`, `student`) behind a Let's Encrypt wildcard certificate.
+Apps are served at `https://<app>.<your-domain>` (`cas`, `idp`, `hr`, `drupal`, `alumni`, `events`, `student`) behind a Let's Encrypt wildcard certificate.
 
 ## Quick start
 
@@ -84,6 +84,7 @@ Sign in with the **short user name** (`alice`, not `alice@demo.test`). Passwords
 | HR Self-Service | `alice` or `bob` | Profile with employee number and groups; admin page works |
 | HR Self-Service | `carol` | Admin page denied |
 | Alumni Directory | `erin` or `alice` | Profile and alumni directory |
+| Campus Events (`/admin/`) | `alice` / `bob` / `carol` | Admin / organizer (own events only) / signs in but is not staff (403) |
 | Student Records | `carol` / `bob` | Own records / registrar access |
 | Drupal | `alice` / `carol` | Editor / non-editor |
 

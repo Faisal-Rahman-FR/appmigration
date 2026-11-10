@@ -11,9 +11,9 @@ const read=p=>readFileSync(resolve(root,p),'utf8');
 const manifest=JSON.parse(read('manifest.yaml')); // JSON is a valid YAML 1.2 document.
 const parser=new XMLParser({ignoreAttributes:false});
 const targets=new Set(['gallery app','custom SAML','OIDC re-integration','App Proxy or Private Access','retire','needs analysis']);
-const canonicalUseCases={hr:'UC-01',zoom:'UC-02',student:'UC-03',drupal:'UC-04',alumni:'UC-05'};
+const canonicalUseCases={hr:'UC-01',zoom:'UC-02',student:'UC-03',drupal:'UC-04',alumni:'UC-05',events:'UC-06'};
 test('canonical use-case identities are fixed across manifest, fixtures and expected answers',()=>{
-  assert.equal(manifest.samples.filter(sample=>sample.useCase.startsWith('UC')).length,5);
+  assert.equal(manifest.samples.filter(sample=>sample.useCase.startsWith('UC')).length,6);
   for(const [id,useCase] of Object.entries(canonicalUseCases)){
     const sample=manifest.samples.find(sample=>sample.id===id);
     assert.ok(sample,id);
@@ -27,9 +27,9 @@ test('canonical use-case identities are fixed across manifest, fixtures and expe
   }
   for(const sample of manifest.samples.filter(sample=>!(sample.id in canonicalUseCases)))assert.match(sample.useCase,/^S\d{2}$/,`${sample.id} remains explicitly synthetic`);
 });
-test('manifest names exactly twenty unique applications and resolvable dependencies',()=>{
-  assert.equal(manifest.samples.length,20);
-  assert.equal(new Set(manifest.samples.map(s=>s.id)).size,20);
+test('manifest names exactly twenty-one unique applications and resolvable dependencies',()=>{
+  assert.equal(manifest.samples.length,21);
+  assert.equal(new Set(manifest.samples.map(s=>s.id)).size,21);
   for(const p of [manifest.shared.compose,manifest.shared.environment,manifest.shared.users,...manifest.shared.bootstrap,...manifest.shared.dependencies])assert.ok(existsSync(resolve(root,p)),p);
   const users=JSON.parse(read(manifest.shared.users));
   assert.equal(users.length,7);
@@ -50,7 +50,7 @@ test('manifest names exactly twenty unique applications and resolvable dependenc
     sample.ingestPaths.forEach(p=>{assert.ok(!seen.has(p),'each fixture belongs to one app');seen.add(p);});
   }
   const fixtureFiles=readdirSync(resolve(root,'config/ingest')).filter(f=>['.json','.xml'].includes(extname(f)));
-  assert.equal(fixtureFiles.length,20);
+  assert.equal(fixtureFiles.length,21);
   assert.deepEqual(new Set(fixtureFiles.map(f=>'config/ingest/'+f)),seen);
 });
 test('exactly one malformed fixture; all remaining JSON and XML parse',()=>{
@@ -71,7 +71,7 @@ test('fixtures carry expected identifiers and attribute evidence without copying
     const evidence=sample.ingestPaths[0].endsWith('.json')?JSON.stringify(JSON.parse(source)):source;
     if(expected.entityId!==null){
       if(sample.id==='oidc')assert.equal(JSON.parse(source).client_id,expected.entityId);
-      else if(sample.id==='hr'||sample.id==='alumni')assert.equal(JSON.parse(source).serviceId,expected.entityId+'.*');
+      else if(sample.id==='hr'||sample.id==='alumni'||sample.id==='events')assert.equal(JSON.parse(source).serviceId,expected.entityId+'.*');
       else if(source.trim().startsWith('{'))assert.equal(JSON.parse(source).serviceId,expected.entityId);
       else assert.ok(source.includes(expected.entityId),sample.id);
     }

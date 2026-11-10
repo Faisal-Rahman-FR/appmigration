@@ -84,6 +84,38 @@ Register `https://alumni.<domain>/login` (exact) as a **web** redirect URI and `
 3. Sign out lands on `/`, and a new `/profile` visit goes back to Entra (Entra may sign you in silently if its session is still valid; test with a fresh window or `prompt=login`).
 4. `readyz` stays 200 with Entra reachable and DB up.
 
+## Variant: Apache `mod_auth_cas` (edge-terminated), UC-06
+
+Demo: `samples/apps/cpanel-events` (Campus Events Admin). Here the PHP has **no sign-in code**: an `.htaccess` (`AuthType CAS`, `Require valid-user`) makes `mod_auth_cas` authenticate and set `REMOTE_USER`; authorization is a local table keyed by it. See [integration scenarios](./integration-scenarios.md) for why this is class T2.
+
+### Validation status
+
+Deployed 2026-11-10 on the demo VM. **Both paths validated by browser test** (Entra path page-observed with MFA done by the operator; automated authenticated tests remain MFA-blocked). Legacy: 4 browser tests against the real CAS (anonymous redirect for the page and the static export, admin, organizer, non-staff, logout ends CAS SSO). Entra: OIDC callback and Graph `mailNickname` link, admin dashboard, static export refused, Entra logout and re-authentication, non-staff 403; rollback to `mod_auth_cas` exercised. The live sign-in found a bug the anonymous tests could not (`require` vs `require_once` of the shared helper class, a fatal on the first page after the callback). Not observed: the export download as alice, an unassigned user. See the [evidence report](../../../../samples/docs/EVENTS-ENTRA-VALIDATION.md).
+
+### Approach: replace the edge inside PHP, keep the contract
+
+A cPanel user normally cannot install `mod_auth_openidc`. So `EVENTS_AUTH=entra` swaps `.htaccess` for
+
+```apache
+php_value auto_prepend_file /var/www/events/src/entra_guard.php
+```
+
+The guard runs before each PHP page under `/admin`, signs in with OIDC (code flow, S256 PKCE, state, nonce, exact HTTPS redirect `/admin/callback.php`, tenant check, `mailNickname` from Graph as `uid` as in the Alumni pilot) and sets `$_SERVER['REMOTE_USER']`. The application pages and the role table are unchanged, so migration is a deployment change, not a rewrite. If you control Apache, `mod_auth_openidc` is the closer swap.
+
+### Traps found by running it
+
+1. **A prepend does not run for static files.** Anything the old `AuthType CAS` directory protected that is not PHP becomes public. Deny direct access (`Require all denied` in `exports/.htaccess`) and deliver the file through a guarded PHP script that also checks the role. Test the anonymous static URL in both modes.
+2. **Edge authentication is not authorization.** `valid-user` admits every CAS user to static files; the only fix at the edge is a user list in `.htaccess` that duplicates and drifts from the role table. Moving the file behind PHP removes the duplicate. `mod_auth_cas` answers **401**, not 403, when an authenticated user fails `Require user`.
+3. **Module directive names differ by version.** The Debian build (1.2) has no `CASValidateServer`; setting `CASCertificatePath` enables server certificate validation. `CASScrubRequestHeaders` is valid only in a `<Directory>` section, not in `.htaccess` or server scope.
+4. **Behind a TLS-terminating proxy** set `CASRootProxiedAs <https origin>` or the module builds `http://` service URLs. Its cookie is set without `Secure` and with the protected directory as its path (`/admin/`): add `Secure` at the gateway (`proxy_cookie_flags ~ secure`) and clear the cookie on that path at logout, or sign-out silently fails.
+5. **No back-channel logout** in this setup: register the CAS service with `logoutType NONE` and document that other apps' sessions are not ended.
+6. **A newly registered CAS service is not hot-loaded** in the demo's JSON registry: CAS keeps answering "Application Not Authorized" until it is restarted.
+7. **Form-action CSP**: include the identity provider's origin (`login.microsoftonline.com` or the CAS origin) for the sign-out redirect.
+
+### Entra objects
+
+OIDC app registration (single tenant, implicit flows off, assignment required), redirect `https://<host>/admin/callback.php` and post-logout `https://<host>/`, a base `member` app role, a client secret in a `0600` file above the web root, and an admin consent grant for delegated Graph `User.Read` when the tenant blocks user consent. Authorization stays in `event_staff`; the app role only decides who may sign in.
+
 ## Pitfalls
 
 - `AADSTS50011` redirect mismatch (path, trailing slash, `http` vs `https`).

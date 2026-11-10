@@ -33,6 +33,7 @@ services:
       - db-data:/var/lib/mysql
       - ./database/01-alumni.sql:/docker-entrypoint-initdb.d/01-alumni.sql:ro
       - ./database/02-grants.sh:/docker-entrypoint-initdb.d/02-grants.sh:ro
+      - ./database/03-events.sql:/docker-entrypoint-initdb.d/03-events.sql:ro
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
@@ -175,6 +176,32 @@ services:
       retries: 20
     networks: [private]
     restart: unless-stopped
+  events:
+    build:
+      context: ./apps/cpanel-events
+      additional_contexts:
+        alumni: ./apps/php-cpanel
+    environment:
+      EVENTS_AUTH: ${EVENTS_AUTH:-cas}
+      CAS_ORIGIN: ${CAS_ORIGIN:?Initialize first}
+      EVENTS_ORIGIN: ${EVENTS_ORIGIN:?Initialize first}
+      ENTRA_TENANT_ID: ${ENTRA_TENANT_ID:-}
+      ENTRA_CLIENT_ID: ${EVENTS_ENTRA_CLIENT_ID:-}
+      DB_HOST: db
+      DB_PASSWORD: ${DB_PASSWORD:?Initialize first}
+    volumes:
+      - ./.local/tls:/tls:ro
+      # /dev/null keeps CAS mode working when no Entra secret file exists; a missing path would become a directory.
+      - ${EVENTS_ENTRA_SECRET_FILE:-/dev/null}:/run/events-entra-secret.php:ro
+    depends_on:
+      db: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@file_get_contents('http://127.0.0.1/healthz')?0:1);"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+    networks: [private, edge]
+    restart: unless-stopped
   gateway:
     image: nginx:1.28.0-alpine
     ports:
@@ -188,6 +215,7 @@ services:
       hr: {condition: service_started}
       drupal: {condition: service_started}
       apache: {condition: service_started}
+      events: {condition: service_started}
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- --no-check-certificate https://127.0.0.1/healthz | grep -q ok"]
       interval: 15s

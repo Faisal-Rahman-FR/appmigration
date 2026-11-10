@@ -1,0 +1,3 @@
+# A PHP prepend never runs for static files, so nothing under exports/ may be served directly.
+# The export is delivered by ../download.php, which the guard protects and which checks the role.
+Require all denied
